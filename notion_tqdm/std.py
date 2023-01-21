@@ -117,24 +117,32 @@ class notion_tqdm(tqdm):
             # Base props
             # TODO: Difference only updates
             now = time()
-            row = self.row
-            row.total = self.total
-            row.name = self.desc
-            row.status = self.status
-            row.value = self.n
-            row.start_timestamp = self.start_t
-            row.update_timestamp = now
-            row.timerange = NotionDate(
-                self.localize_timestamp(self.start_t),
-                self.localize_timestamp(now),
-                timezone=notion_tqdm.timezone,
-            )
-            row.elapsed_sec = now - self.start_t
-            row.post_interval_sec = self.post_interval_sec
+            # static
+            if self.base_prop_change:
+                self.row.total = self.total
+                self.start_timestamp = self.start_t
+                self.base_prop_change = False
+            # dynamic
+            if self.desc_old is None or self.desc_old != self.desc:
+                self.row.name = self.desc; self.desc_old = self.desc
+            if self.status_old is None or self.status_old != self.status:
+                self.row.status = self.status; self.status_old = self.status
+            if self.post_interval_sec_old is None or self.post_interval_sec_old != self.post_interval_sec:
+                self.row.post_interval_sec = self.post_interval_sec; self.post_interval_sec_old = self.post_interval_sec
+            self.row.value = self.n
+            self.update_timestamp = now
+            # long time update
+            if (now - self.start_t) > 60:
+                self.row.timerange = NotionDate(
+                    self.localize_timestamp(self.start_t),
+                    self.localize_timestamp(now),
+                    timezone=notion_tqdm.timezone,
+                )
+            self.row.elapsed_sec = now - self.start_t
             # Custom props
             # TODO: Set the props that have been skipped during creating.
             for c, v in self.custom_props.items():
-                row.set_property(c, v)
+                self.row.set_property(c, v)
             # Add Text Blocks
             for text in self._pending_texts:
                 self.row.children.add_new(TextBlock).title = text
@@ -178,6 +186,11 @@ class notion_tqdm(tqdm):
         self.sp = self.display
         self.custom_props = {}
         self._pending_texts = []
+        # new flag
+        self.base_prop_change = True
+        self.desc_old = None
+        self.status_old = None
+        self.post_interval_sec_old = None
 
     def __iter__(self, *args, **kwargs):
         try:
@@ -189,11 +202,11 @@ class notion_tqdm(tqdm):
 
     def add_text(self, text, force=False):
         self._pending_texts.append(text)
-        self.display(force)
+        self.display(force=force)
 
     def update_props(self, force=False, **kwags):
         self.custom_props = kwags
-        self.display(force)
+        self.display(force=force)
 
     def update(self, *args, **kwargs):
         try:
