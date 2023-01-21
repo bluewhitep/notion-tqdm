@@ -130,6 +130,7 @@ class notion_tqdm(tqdm):
                 timezone=notion_tqdm.timezone,
             )
             row.elapsed_sec = now - self.start_t
+            row.post_interval_sec = self.post_interval_sec
             # Custom props
             # TODO: Set the props that have been skipped during creating.
             for c, v in self.custom_props.items():
