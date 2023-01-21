@@ -20,8 +20,8 @@ REQUIRED_COLUMNS = set(
         "name",
         "status",
         "value",
-        "start_timestamp",
-        "update_timestamp",
+        #"start_timestamp",
+        #"update_timestamp",
         "timerange",
         "elapsed_sec",
     ]
