@@ -27,7 +27,7 @@ pip install git+https://github.com/bluewhitep/notion-tqdm
 2.  [**Duplicate this page**](https://www.notion.so/syunyo/notion-tqdm-template-7d2d53595e774c9eb7a020e00fd81fab) in your own workspace and **get the table link**.
     （Note that it is a table link, not a page link.）
 
-** Remove property: start_timestamp, update_timestamp **
+**Remove property: start_timestamp, update_timestamp**
 
 <img src="https://user-images.githubusercontent.com/17490886/100450226-9f71f380-30f8-11eb-97c5-2538d99d4a5b.png" width='500px' />
 
