@@ -144,7 +144,7 @@ class notion_tqdm(tqdm):
     def _can_post(self):
         is_past = (
             self.last_post_time is None
-            or (time() - self.last_post_time) > notion_tqdm.post_interval_sec
+            or (time() - self.last_post_time) > self.post_interval_sec
         )
         return not self._loading and is_past
 
